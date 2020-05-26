@@ -74,7 +74,7 @@ C.pretrain = False
 # C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 # C.stride_list = [1, 1, 2, 2, 1, 2, 1]
 
-C.num_layer_list = [1, 4, 4, 4, 4, 4, 1]
+C.num_layer_list = [1, 1, 1, 1, 1, 1, 1]
 C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 C.stride_list = [1, 2, 2, 2, 1, 2, 1]
 
