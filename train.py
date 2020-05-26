@@ -212,7 +212,9 @@ def train(train_loader_model, model, optimizer, lr_policy, logger, epoch):
         input = input.cuda(non_blocking=True)
         target = target.cuda(non_blocking=True)
 
-        loss = model.module._loss(input, target)
+        logit = model(input)
+        loss = model.module._criterion(logit, target)
+
         logger.add_scalar('loss/train', loss, epoch*len(pbar)+step)
         loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), config.grad_clip)
