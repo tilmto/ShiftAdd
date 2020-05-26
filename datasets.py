@@ -13,7 +13,8 @@ crop_size = 32
 padding = 4
 
 
-def prepare_train_data(dataset='imagenet', datadir='/home/yf22/dataset'):
+def prepare_train_data(dataset='imagenet', datadir='/home/yf22/dataset', batch_size=128,
+                       shuffle=True, num_workers=4):
     if 'imagenet' in dataset:
         train_dataset = torchvision.datasets.ImageFolder(
             datadir,
@@ -31,7 +32,8 @@ def prepare_train_data(dataset='imagenet', datadir='/home/yf22/dataset'):
     return train_dataset
 
 
-def prepare_test_data(dataset='imagenet', datadir='/home/yf22/dataset'):
+def prepare_test_data(dataset='imagenet', datadir='/home/yf22/dataset', batch_size=128,
+                      shuffle=False, num_workers=4):
 
     if 'imagenet' in dataset:
         test_dataset = torchvision.datasets.ImageFolder(datadir, transforms.Compose([

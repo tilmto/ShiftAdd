@@ -30,8 +30,6 @@ C.repo_name = 'DNACoS'
 
 """Data Dir and Weight Dir"""
 C.dataset_path = "/data1/ILSVRC/Data/CLS-LOC"
-C.batch_size = 256
-C.num_workers = 32
 
 C.dataset = 'imagenet'
 
@@ -63,6 +61,7 @@ C.momentum = 0.9
 C.weight_decay = 4e-5
 
 C.betas=(0.5, 0.999)
+C.num_workers = 32
 
 
 """ Search Config """
@@ -75,7 +74,7 @@ C.pretrain = False
 # C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 # C.stride_list = [1, 1, 2, 2, 1, 2, 1]
 
-C.num_layer_list = [1, 1, 1, 1, 1, 1, 1]
+C.num_layer_list = [1, 4, 4, 4, 4, 4, 1]
 C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 C.stride_list = [1, 2, 2, 2, 1, 2, 1]
 
@@ -84,6 +83,7 @@ C.header_channel = 1984
 
 ########################################
 
+C.batch_size = 256
 C.niters_per_epoch = C.num_train_imgs // C.batch_size
 C.image_height = 224 # this size is after down_sampling
 C.image_width = 224

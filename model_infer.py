@@ -82,7 +82,7 @@ class FBNet_Infer(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d(1)
         self.fc = nn.Linear(self.header_channel, self.num_classes)
 
-        self._criterion = nn.CrossEntropyLoss()
+        self._criterion = nn.CrossEntropyLoss().cuda()
 
 
     def forward(self, input):

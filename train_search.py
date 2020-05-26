@@ -38,32 +38,8 @@ from model_infer import FBNet_Infer
 from lr import LambdaLR
 from perturb import Random_alpha
 
-import argparse
-
-parser = argparse.ArgumentParser(description='Search on ImageNet-100')
-parser.add_argument('--dataset_path', type=str, default=None,
-                    help='path to ImageNet-100')
-parser.add_argument('-b', '--batch_size', type=int, default=None,
-                    help='batch size')
-parser.add_argument('--num_workers', type=int, default=None,
-                    help='number of workers')
-parser.add_argument('--flops_weight', type=float, default=None,
-                    help='weight of FLOPs loss')
-parser.add_argument('--gpu', nargs='+', type=int, default=None,
-                    help='specify gpus')
-args = parser.parse_args()
-
 
 def main(pretrain=True):
-    if args.dataset_path is not None:
-        config.dataset_path = args.dataset_path
-    if args.batch_size is not None:
-        config.batch_size = args.batch_size
-    if args.num_workers is not None:
-        config.num_workers = args.num_workers
-    if args.flops_weight is not None:
-        config.flops_weight = args.flops_weight
-
     config.save = 'ckpt/{}'.format(config.save)
     logger = SummaryWriter(config.save)
 
@@ -81,19 +57,15 @@ def main(pretrain=True):
     # preparation ################
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
-    # seed = config.seed
-    # np.random.seed(seed)
-    # torch.manual_seed(seed)
-    # if torch.cuda.is_available():
-    #     torch.cuda.manual_seed(seed)
+    seed = config.seed
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
 
     # Model #######################################
     model = Network(config=config)
-
-    if args.gpu is not None:
-        model = torch.nn.DataParallel(model, device_ids=args.gpu).cuda()
-    else:
-        model = torch.nn.DataParallel(model).cuda()
+    model = torch.nn.DataParallel(model).cuda()
 
     if type(pretrain) == str:
         partial = torch.load(pretrain + "/weights.pt")
@@ -170,9 +142,15 @@ def main(pretrain=True):
 
 
     train_data = prepare_train_data(dataset=config.dataset,
-                                      datadir=config.dataset_path+'/train')
+                                      datadir=config.dataset_path+'/train',
+                                      batch_size=config.batch_size,
+                                      shuffle=True,
+                                      num_workers=config.num_workers)
     test_data = prepare_test_data(dataset=config.dataset,
-                                    datadir=config.dataset_path+'/val')
+                                    datadir=config.dataset_path+'/val',
+                                    batch_size=config.batch_size,
+                                    shuffle=False,
+                                    num_workers=config.num_workers)
 
     num_train = len(train_data)
     indices = list(range(num_train))
@@ -379,8 +357,7 @@ def train(train_loader_model, train_loader_arch, model, architect, optimizer, lr
         if epsilon_alpha and update_arch:
             Random_alpha(model, epsilon_alpha)
 
-        logit = model(input, temp)
-        loss = model.module._criterion(logit, target)
+        loss = model.module._loss(input, target, temp=temp)
 
         # time_fw = time.time() - end
         # end = time.time()

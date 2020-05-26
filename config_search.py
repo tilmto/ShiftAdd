@@ -28,11 +28,7 @@ C.repo_name = 'DNACoS'
 
 
 """Data Dir and Weight Dir"""
-C.dataset_path = "/data1/ILSVRC/Data/CLS-LOC" # Specify path to ImageNet-100
-C.batch_size = 192
-C.num_workers = 16
-C.flops_weight = 1e-9
-
+C.dataset_path = "/data1/ILSVRC/Data/CLS-LOC"
 
 C.dataset = 'imagenet'
 
@@ -64,6 +60,7 @@ C.momentum = 0.9
 C.weight_decay = 5e-4
 
 C.betas=(0.5, 0.999)
+C.num_workers = 32
 
 """ Search Config """
 C.grad_clip = 5
@@ -75,7 +72,7 @@ C.pretrain = False
 # C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 # C.stride_list = [1, 1, 2, 2, 1, 2, 1]
 
-C.num_layer_list = [1, 1, 1, 1, 1, 1, 1]
+C.num_layer_list = [1, 4, 4, 4, 4, 4, 1]
 C.num_channel_list = [16, 24, 32, 64, 112, 184, 352]
 C.stride_list = [1, 2, 2, 2, 1, 2, 1]
 
@@ -100,13 +97,15 @@ C.update_hw_freq = 5
 C.hw_aware_nas = False
 ########################################
 
+
+C.batch_size = 192
 C.niters_per_epoch = int(C.num_train_imgs // C.batch_size * 0.8)
 C.image_height = 224
 C.image_width = 224
 C.save = "search"
 
 C.nepochs = 90
-C.eval_epoch = 1
+C.eval_epoch = 5
 
 C.lr_schedule = 'cosine'
 C.lr = 0.1
@@ -131,8 +130,9 @@ C.arch_learning_rate = 1e-2
 
 C.efficiency_metric = 'flops'
 
-C.flops_max = 3e8
-C.flops_min = 1e8
+C.flops_weight = 1e-9
+C.flops_max = 4e8
+C.flops_min = 2e8
 
 C.edp_weight = 1e-2
 C.edp_max = 2000
